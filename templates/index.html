@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Insewlution-Main</title>
+    <link rel="stylesheet" href="/static/main-style.css">
+    <link rel="manifest" href="/static/manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <button class="profile-button" onclick="openGenderModal()">
+                <img src="static/profil.png" alt="Profile" class="profile-image">
+            </button>
+            <h1 class="logo-title">Insewlution</h1>
+        </div>
+    </header>
+    
+    <div class="page-container">
+
+        <!-- Hidden file input and circular upload button -->
+        <input type="file" id="imageInput" style="display: none;" onchange="handleImageUpload(event)">
+        <button id="uploadButton" class="upload-button" onclick="document.getElementById('imageInput').click()" disabled></button>
+        
+        <!-- Create Model Button (Initially Disabled) -->
+        <button id="createModelButton" class="start-button" disabled onclick="uploadImages()">Create the model based on pictures</button>
+
+        <!-- Create Model Based on Values Button (Initially Disabled) -->
+        <button id="createModelBasedOnValuesButton" class="start-button" disabled onclick="createModelBasedOnValues()">Create the model based on values</button>
+
+    </div>
+
+    <!-- Modal for Gender selection -->
+    <div id="genderModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeGenderModal()">&times;</span>
+            <h2 class="subtitle">Which style ?</h2>
+            <div class="gender-buttons">
+                <button id="maleButton" class="gender-button" onclick="selectGender('male')">Fit</button>
+                <button id="femaleButton" class="gender-button" onclick="selectGender('female')">Loose</button>
+            </div>
+            <!-- Added textbox for height input -->
+            <div class="height-input-container">
+                <h2 class="subtitle">Enter your height in cm</h2>
+                <input type="number" id="heightInput" placeholder="Height in cm" oninput="validateForm()" />
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+    <script>
+        let selectedType = null;
+        let height = null;
+        let imageCount = 0;
+        let uploadedImages = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const uploadButton = document.getElementById('uploadButton');
+            uploadButton.disabled = true;  // Ensure upload button is initially disabled
+        });
+
+        // Open the gender selection modal
+        function openGenderModal() {
+            document.getElementById('genderModal').style.display = 'block';
+        }
+
+        // Close the gender selection modal
+        function closeGenderModal() {
+            document.getElementById('genderModal').style.display = 'none';
+        }
+
+        // Gender selection logic
+        function selectGender(style) {
+            const maleButton = document.getElementById('maleButton');
+            const femaleButton = document.getElementById('femaleButton');
+
+            if (style === 'male') {
+                maleButton.classList.add('selected');
+                femaleButton.classList.remove('selected');
+                selectedType = 'Fit';  // Set selected gender
+            } else if (style === 'female') {
+                femaleButton.classList.add('selected');
+                maleButton.classList.remove('selected');
+                selectedType = 'Loose';  // Set selected gender
+            }
+
+            // Validate form after gender selection
+            validateForm();
+        }
+
+        // Validate the form (height and gender must be filled)
+        function validateForm() {
+            const heightInput = document.getElementById('heightInput');
+            height = heightInput.value.trim();
+
+            // Enable the upload button only if both gender is selected and height is entered
+            const uploadButton = document.getElementById('uploadButton');
+            if (selectedType && height) {
+                uploadButton.disabled = false;  // Enable the upload button
+            } else {
+                uploadButton.disabled = true;  // Keep it disabled
+            }
+
+            // Validate the "Create the model based on values" button
+            validateModelValues();
+        }
+
+        // Validate the measurement input fields and enable the button if all conditions are met
+        function validateModelValues() {
+            const requiredFields = [
+                'shoulderDistance', 'armpitDistance', 'armpitHeight', 
+                'chestHeight', 'neckHeight', 'neckWidth', 
+                'shoulderWidth', 'sleeveHeight', 'sleeveWidth'
+            ];
+
+            const allFieldsFilled = requiredFields.every(function(id) {
+                const value = document.getElementById(id).value.trim();
+                return value !== '';
+            });
+
+            const createModelBasedOnValuesButton = document.getElementById('createModelBasedOnValuesButton');
+
+            // Enable button only if all inputs are filled and both height and gender are provided
+            if (allFieldsFilled && selectedType && height) {
+                createModelBasedOnValuesButton.disabled = false;
+            } else {
+                createModelBasedOnValuesButton.disabled = true;
+            }
+        }
+
+        // Handle the image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+
+            if (file && file.type.startsWith('image/')) {
+                uploadedImages.push(file); // Store the actual File object
+                imageCount++;
+
+                // Check if both images have been uploaded
+                if (imageCount === 2) {
+                    const createModelButton = document.getElementById('createModelButton');
+                    createModelButton.disabled = false;  // Enable the "Create the model" button
+                }
+            } else {
+                alert('Please upload a valid image file.');
+            }
+        }
+
+        // Upload both images
+        function uploadImages() {
+            if (uploadedImages.length !== 2) {
+                alert('Please upload two images before proceeding.');
+                return;
+            }
+
+            // Simulate image creation by displaying the static image "patron.jpg"
+            const existingImage = document.getElementById('modelImage');
+            if (!existingImage) {
+                const img = document.createElement('img');
+                img.src = 'static/patron.jpg';
+                img.alt = 'Model Pattern';
+                img.id = 'modelImage';
+                img.classList.add('centered-image');
+                document.body.appendChild(img);
+            }
+        }
+
+        // Create model based on values (placeholder for actual logic)
+        function createModelBasedOnValues() {
+            // Gather all the input values
+            const modelValues = {
+                shoulderDistance: document.getElementById('shoulderDistance').value.trim(),
+                armpitDistance: document.getElementById('armpitDistance').value.trim(),
+                armpitHeight: document.getElementById('armpitHeight').value.trim(),
+                chestHeight: document.getElementById('chestHeight').value.trim(),
+                neckHeight: document.getElementById('neckHeight').value.trim(),
+                neckWidth: document.getElementById('neckWidth').value.trim(),
+                shoulderWidth: document.getElementById('shoulderWidth').value.trim(),
+                sleeveHeight: document.getElementById('sleeveHeight').value.trim(),
+                sleeveWidth: document.getElementById('sleeveWidth').value.trim(),
+                height: height, // From the height input field
+                type: selectedType // From the gender selection
+            };
+
+            // Send the data to the server using a POST request
+            fetch('/compute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(modelValues) // Send as JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Model created successfully!');
+                } else {
+                    alert('Failed to create model: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while creating the model.');
+            });
+        }
+    </script>
+</body>
+</html>

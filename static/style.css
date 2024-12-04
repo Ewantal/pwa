@@ -1,0 +1,56 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ff4b3a; /* Set background color */
+}
+
+/* Container for centering content */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Logo styling */
+.logo {
+    max-width: 200px; /* Adjust width as needed */
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.logo-title{
+    color: white;
+    font-size: 4em;
+    font-family: 'Lobster', cursive;
+    padding-bottom: 15px;
+}
+
+
+/* Button styling */
+.start-button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: white;
+    color: #ff4b3a;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.start-button:hover {
+    background-color: #f0341d;
+    color: white;
+}
